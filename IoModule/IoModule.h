@@ -15,14 +15,12 @@ private:
     int charIdx;			// номер текущей литеры
     ifstream codeSource;	// поток ввода
     string curLine;			// текущая строка
-
+    vector<pair<int, pair<int, int>>> errCodesAndPos; // список возникших ошибок
 
 private:
     void readLine();		// прочитать следующую строку в curLine
 
 public:
-    vector<pair<int, pair<int, int>>> errCodesAndPos; // список возникших ошибок
-
     IoModule(const string& filePath) {
         lineIdx = 0;
         charIdx = 0;
