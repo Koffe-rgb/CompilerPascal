@@ -14,11 +14,6 @@ void testLexer() {
         cout << lexer->scanNextToken()->toString() << endl;
     }
 
-    for (auto err : io->errCodesAndPos) {
-        auto pos = err.second;
-        cout << "Error: code=" << err.first << ", pos={ " << pos.second << ", " << pos.first << " }" << endl;
-    }
-
     delete lexer;
 }
 

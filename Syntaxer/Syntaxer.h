@@ -7,13 +7,20 @@
 #include "../Lexer/Lexer.h"
 
 const auto start_block = set<TokenCodes> { constsy, typesy, varsy, beginsy };
-const auto start_constpart = set<TokenCodes> { constsy, typesy, varsy, beginsy };
+const auto start_constPart = set<TokenCodes> { constsy, typesy, varsy, beginsy };
+const auto start_constDeclaration = set<TokenCodes> { ident };
+const auto start_constant = set<TokenCodes> { TokenCodes::plus, TokenCodes::minus, charconst, stringconst, ident, intconst, floatconst };
+const auto start_typePart = set<TokenCodes> { typesy, varsy, beginsy };
+const auto start_typeDeclaration = set<TokenCodes> { ident };
+const auto start_type = set<TokenCodes> { TokenCodes::plus, TokenCodes::minus, ident, leftpar, intconst, floatconst, charconst, stringconst };
 
-const auto follow_constpart = set<TokenCodes> { typesy, varsy, beginsy };
-const auto follow_typepart = set<TokenCodes> { varsy, beginsy };
-const auto follow_varpart = set<TokenCodes> { beginsy };
-const auto follow_constdeclaration = set<TokenCodes> { semicolon };
 const auto follow_block = set<TokenCodes> { point };
+const auto follow_constPart = set<TokenCodes> { typesy, varsy, beginsy };
+const auto follow_typePart = set<TokenCodes> { varsy, beginsy };
+const auto follow_varPart = set<TokenCodes> { beginsy };
+const auto follow_constDeclaration = set<TokenCodes> { semicolon };
+const auto follow_typeDeclaration = set<TokenCodes> { semicolon };
+
 
 class Syntaxer {
 public:
@@ -33,8 +40,8 @@ private:
     void scanNextToken();
 
     void accept(TokenCodes tokenCode);
-    bool isSymbolBelong(const set<TokenCodes>& starters) const;
-    set<TokenCodes> unionOfSets(const set<TokenCodes>& first, const set<TokenCodes>& second);
+    bool isSymbolBelongTo(const set<TokenCodes>& starters) const;
+    set<TokenCodes> unionOf(const set<TokenCodes>& first, const set<TokenCodes>& second);
     void skipTo(const set<TokenCodes>& starters);
     void skipTo(const set<TokenCodes>& starters, const set<TokenCodes>& followers);
 

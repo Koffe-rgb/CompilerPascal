@@ -9,5 +9,5 @@ add_executable(
         Headers/Codes.h
         IoModule/IoModule.cpp IoModule/IoModule.h
         Lexer/Lexer.cpp Lexer/Lexer.h
-        #Syntaxer/Syntaxer.cpp Syntaxer/Syntaxer.h
+        Syntaxer/Syntaxer.cpp Syntaxer/Syntaxer.h
 )
