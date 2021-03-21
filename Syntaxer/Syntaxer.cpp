@@ -20,8 +20,8 @@ void Syntaxer::accept(TokenCodes tokenCode) {
     }
 }
 
-bool Syntaxer::isSymbolBelongTo(const set<TokenCodes>& starters) const {
-    return starters.contains(curToken->getCode());
+bool Syntaxer::isSymbolBelongTo(const set<TokenCodes>& symbols) const {
+    return symbols.contains(curToken->getCode());
 }
 
 set<TokenCodes> Syntaxer::unionOf(const set<TokenCodes>& first, const set<TokenCodes>& second) {
@@ -30,14 +30,14 @@ set<TokenCodes> Syntaxer::unionOf(const set<TokenCodes>& first, const set<TokenC
     return res;
 }
 
-void Syntaxer::skipTo(const set<TokenCodes>& starters) {
-    while(!starters.contains(curToken->getCode())) {
+void Syntaxer::skipTo(const set<TokenCodes>& symbols) {
+    while(!symbols.contains(curToken->getCode())) {
         scanNextToken();
     }
 }
 
-void Syntaxer::skipTo(const set<TokenCodes> &starters, const set<TokenCodes> &followers) {
-    while(!starters.contains(curToken->getCode()) && !followers.contains(curToken->getCode())) {
+void Syntaxer::skipTo(const set<TokenCodes> &symbols, const set<TokenCodes> &followers) {
+    while(!symbols.contains(curToken->getCode()) && !followers.contains(curToken->getCode())) {
         scanNextToken();
     }
 }
@@ -476,4 +476,8 @@ void Syntaxer::listOfMarks(const set<TokenCodes> &followers) {
             constant(followers);
         }
     }
+}
+
+IoModule *Syntaxer::getIoModule() const {
+    return ioModule;
 }

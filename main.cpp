@@ -6,14 +6,14 @@
 
 using namespace std;
 
-const string path = "../pascal.txt";
+
 
 void testLexer() {
     setlocale(LC_ALL, "Russian");
+    string path = "../pascal.txt";
 
-    auto* io = new IoModule(path);
-    auto* lex = new Lexer(io);
-    auto* sntxr = new Syntaxer(lex);
+    auto* sntxr = new Syntaxer(path);
+    auto* io = sntxr->getIoModule();
 
     sntxr->start();
     for (auto err : io->getErrCodesAndPos()) {

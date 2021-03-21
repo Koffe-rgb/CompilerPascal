@@ -3,7 +3,6 @@
 
 #pragma once
 #include <set>
-#include <vector>
 #include "../Lexer/Lexer.h"
 #include "../Headers/Sets.h"
 
@@ -14,14 +13,16 @@ private:
     IoModule* ioModule;
     AbstractToken* curToken;
 public:
-    Syntaxer(Lexer* lexer) {
-        this->lexer = lexer;
+    Syntaxer(string& path) {
+        this->lexer = new Lexer(path);
         this->ioModule = lexer->getIoModule();
         this->curToken = nullptr;
     };
     ~Syntaxer() {
         delete lexer;
     };
+
+    IoModule *getIoModule() const;
 
     void start() {
         program();
@@ -32,10 +33,10 @@ private:
     void scanNextToken();
 
     void accept(TokenCodes tokenCode);
-    bool isSymbolBelongTo(const set<TokenCodes>& starters) const;
+    bool isSymbolBelongTo(const set<TokenCodes>& symbols) const;
     static set<TokenCodes> unionOf(const set<TokenCodes>& first, const set<TokenCodes>& second);
-    void skipTo(const set<TokenCodes>& starters);
-    void skipTo(const set<TokenCodes>& starters, const set<TokenCodes>& followers);
+    void skipTo(const set<TokenCodes>& symbols);
+    void skipTo(const set<TokenCodes>& symbols, const set<TokenCodes>& followers);
 
 
     // Грамматики
