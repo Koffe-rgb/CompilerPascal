@@ -43,8 +43,6 @@ void Syntaxer::skipTo(const set<TokenCodes> &starters, const set<TokenCodes> &fo
 }
 
 void Syntaxer::program() {
-    // TODO initFictitiousScope
-    // TODO open scope
     scanNextToken();
     accept(programsy);
     accept(ident);
@@ -66,10 +64,6 @@ void Syntaxer::block(const set<TokenCodes> &followers) {
         symbols = unionOf(follow_varPart, followers);
         varPart(symbols);
         operatorPart(followers);
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -85,11 +79,6 @@ void Syntaxer::constPart(const set<TokenCodes> &followers) {
             constDeclaration(symbols);
             accept(semicolon);
         } while (curToken->getCode() == ident);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -99,17 +88,9 @@ void Syntaxer::constDeclaration(const set<TokenCodes> &followers) {
         skipTo(start_constDeclaration, followers);
     }
     if (isSymbolBelongTo(start_constDeclaration)) {
-        // TODO инит констант на семантике
-
         accept(ident);
         accept(TokenCodes::equal);
         constant(followers);
-        // TODO проверка на уникальность в scope
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -121,7 +102,6 @@ void Syntaxer::constant(const set<TokenCodes> &followers) {
     if (isSymbolBelongTo(start_constant)) {
         switch (curToken->getCode()) {
             case intconst:
-                // TODO create int const on semantic level
                 accept(intconst);
                 break;
             case floatconst:
@@ -151,12 +131,7 @@ void Syntaxer::constant(const set<TokenCodes> &followers) {
                 }
                 break;
         }
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
-    //return type;
 }
 
 void Syntaxer::typePart(const set<TokenCodes> &followers) {
@@ -172,11 +147,6 @@ void Syntaxer::typePart(const set<TokenCodes> &followers) {
             typeDeclaration(symbols);
             accept(semicolon);
         } while (curToken->getCode() == ident);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -186,16 +156,9 @@ void Syntaxer::typeDeclaration(const set<TokenCodes> &followers) {
         skipTo(start_typeDeclaration, followers);
     }
     if (isSymbolBelongTo(start_typeDeclaration)) {
-        // TODO
         accept(ident);
         accept(TokenCodes::equal);
         type(followers);
-        // TODO
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -211,11 +174,6 @@ void Syntaxer::type(const set<TokenCodes> &followers) {
         else {
             simpleType(followers);
         }
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -226,13 +184,8 @@ void Syntaxer::simpleType(const set<TokenCodes> &followers) {
     }
     if (isSymbolBelongTo(start_simpleType)) {
         if (curToken->getCode() == ident) {
-            // TODO
             accept(ident);
         }
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -243,13 +196,7 @@ void Syntaxer::referenceType(const set<TokenCodes> &followers) {
     }
     if (isSymbolBelongTo(start_linkType)) {
         accept(arrow);
-        // TODO
         accept(ident);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -265,11 +212,6 @@ void Syntaxer::varPart(const set<TokenCodes> &followers) {
             varDeclaration(symbols);
             accept(semicolon);
         } while (curToken->getCode() == ident);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -286,11 +228,6 @@ void Syntaxer::varDeclaration(const set<TokenCodes> &followers) {
         }
         accept(colon);
         type(followers);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -311,11 +248,6 @@ void Syntaxer::compoundOperator(const set<TokenCodes> &followers) {
             accept(semicolon);
         }
         accept(endsy);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -348,11 +280,6 @@ void Syntaxer::assignmentOperator(const set<TokenCodes> &followers) {
         variable(symbols);
         accept(assign);
         expression(followers);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -367,11 +294,6 @@ void Syntaxer::variable(const set<TokenCodes> &followers) {
         if (curToken->getCode() == arrow) {
             accept(arrow);
         }
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -392,11 +314,6 @@ void Syntaxer::expression(const set<TokenCodes> &followers) {
             scanNextToken();
             simpleExpression(followers);
         }
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -419,11 +336,6 @@ void Syntaxer::simpleExpression(const set<TokenCodes> &followers) {
             scanNextToken();
             term(symbols);
         }
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -440,11 +352,6 @@ void Syntaxer::term(const set<TokenCodes> &followers) {
             scanNextToken();
             factor(symbols);
         }
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -485,11 +392,6 @@ void Syntaxer::factor(const set<TokenCodes> &followers) {
                 accept(ident);
                 break;
         }
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -509,11 +411,6 @@ void Syntaxer::ifOperator(const set<TokenCodes> &followers) {
             accept(elsesy);
             oper(symbols);
         }
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -528,11 +425,6 @@ void Syntaxer::whileOperator(const set<TokenCodes> &followers) {
         expression(symbols);
         accept(dosy);
         oper(followers);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -555,11 +447,6 @@ void Syntaxer::caseOperator(const set<TokenCodes> &followers) {
         }
 
         accept(endsy);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -573,11 +460,6 @@ void Syntaxer::elementOfVariants(const set<TokenCodes> &followers) {
         listOfMarks(symbols);
         accept(colon);
         oper(followers);
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
 
@@ -593,10 +475,5 @@ void Syntaxer::listOfMarks(const set<TokenCodes> &followers) {
             accept(comma);
             constant(followers);
         }
-
-//        if (!isSymbolBelongTo(followers)) {
-//            listError(6);
-//            skipTo(followers);
-//        }
     }
 }
