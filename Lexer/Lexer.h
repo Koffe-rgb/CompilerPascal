@@ -40,7 +40,6 @@ public:
         this->ioModule = ioModule;
         curChar = '\0';
     }
-    // TODO: delete IOModule?
     ~Lexer() {
         delete ioModule;
     }

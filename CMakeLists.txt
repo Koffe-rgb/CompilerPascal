@@ -10,4 +10,4 @@ add_executable(
         IoModule/IoModule.cpp IoModule/IoModule.h
         Lexer/Lexer.cpp Lexer/Lexer.h
         Syntaxer/Syntaxer.cpp Syntaxer/Syntaxer.h
-)
+        Headers/Sets.h)

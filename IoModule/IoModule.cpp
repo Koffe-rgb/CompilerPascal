@@ -48,10 +48,20 @@ void IoModule::logError(int errCode) {
     errCodesAndPos.push_back(ecp);
 }
 
+void IoModule::logError(int errCode, int len) {
+    pair<int, int> pos = pair<int, int>(charIdx - len, lineIdx);
+    pair<int, pair<int, int>> ecp = pair<int, pair<int, int>>(errCode, pos);
+    errCodesAndPos.push_back(ecp);
+}
+
 int IoModule::getLineIdx() const {
     return lineIdx;
 }
 
 int IoModule::getCharIdx() const {
     return charIdx;
+}
+
+const vector<pair<int, pair<int, int>>> &IoModule::getErrCodesAndPos() const {
+    return errCodesAndPos;
 }

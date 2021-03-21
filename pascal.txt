@@ -1,41 +1,55 @@
-program n_2;
-
-var i: integer;
-    a: array[1..10] of integer;
-
+program test;
+const (* раздел констант *)
+  year = 2021;
+  pi_value = 3.141592;
+type  (* раздел типов *)
+  pInteger = ^integer;
+var  (* раздел переменных *)
+  i, j, k : integer;
+  d : real;
+  s : string;
+  ch : char;
+  pInt : pInteger;
+  flag : boolean;
+(* раздел операторов *)
 begin
-  randomize;
+  j := 1;
+  k := 2;
 
-  for i:=1 to 10 do
-    a[i]:=random(100);
+  (* полное условное выражение с составными операторами *)
+  if (k > j) then begin
+    i := 9;
+  end
+  else begin
+    i := 10;
+  end;
 
-  for i:=1 to 10 do
-    write(a[i],' ');
-<
-<=
-<>
+  k := pi_value;
+  d := (5 mod j) * 10 + k;
 
->
->=
+  ch := 'w';
 
-:
-:=
+  (* неполное условное выражение с составным оператором *)
+  flag := true;
+  if (i = 9) or (i = 10) then begin
+    { цикл с предусловием }
+    while (flag) do begin
+      i := i + 2;
+      { условное выражение с простым оператором }
+      if i >= 13 then
+        flag := false;
+    end;
+  end;
 
-.
-..
+  { работа с указанной переменной }
+  pInt^ := 5;
 
-(* 123 *)
-{ 123 }
-
-(123)
-1 * 3
-
-123
-123.4
-123.asfsdf
-
-'a'
-'str_const'
-?
-
+  { оператор варианта }
+  case i of
+    10 : s := 'ten';
+    11 : s := 'eleven';
+    12 : s := 'twelve';
+    13 : s := 'thirteen';
+    14 : s := 'fourteen'
+  end;
 end.
