@@ -1,25 +1,26 @@
 #include <string>
+#include <iostream>
 #include "IoModule/IoModule.h"
 #include "Lexer/Lexer.h"
+#include "Syntaxer/Syntaxer.h"
 
 using namespace std;
 
-const string path = "../pascal.txt";
+
 
 void testLexer() {
-    auto* io = new IoModule(path);
-    auto* lexer = new Lexer(io);
+    setlocale(LC_ALL, "Russian");
+    string path = "../pascal.txt";
 
-    while (io->isOpen()) {
-        cout << lexer->scanNextToken()->toString() << endl;
-    }
+    auto* sntxr = new Syntaxer(path);
+    auto* io = sntxr->getIoModule();
 
-    for (auto err : io->errCodesAndPos) {
+    sntxr->start();
+    for (auto err : io->getErrCodesAndPos()) {
         auto pos = err.second;
-        cout << "Error: code=" << err.first << ", pos={ " << pos.second << ", " << pos.first << " }" << endl;
+        const auto& a = ErrorTable.at(err.first);
+        printf("Строка %d, позиция %d, (код %d): %s\n", pos.second, pos.first, err.first, a.c_str());
     }
-
-    delete lexer;
 }
 
 int main() {

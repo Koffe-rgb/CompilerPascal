@@ -15,14 +15,12 @@ private:
     int charIdx;			// номер текущей литеры
     ifstream codeSource;	// поток ввода
     string curLine;			// текущая строка
-
+    vector<pair<int, pair<int, int>>> errCodesAndPos; // список возникших ошибок
 
 private:
     void readLine();		// прочитать следующую строку в curLine
 
 public:
-    vector<pair<int, pair<int, int>>> errCodesAndPos; // список возникших ошибок
-
     IoModule(const string& filePath) {
         lineIdx = 0;
         charIdx = 0;
@@ -36,6 +34,8 @@ public:
 
     int getCharIdx() const;
 
+    const vector<pair<int, pair<int, int>>> &getErrCodesAndPos() const;
+
     bool isOpen();	// проверяет открыт ли файл и прочитана ли последгяя строка до конца
 
     char peekChar(int offset = 0);	// посмотреть на n-ную литеру, от текущей, без изменения charIdx
@@ -43,7 +43,7 @@ public:
     char getChar();	// получить текущую литеру и изменить charIdx, и lineIdx, если требуется
 
     void logError(int errCode);	// записать в лог информацию об ошибке, по коду
-
+    void logError(int errCode, int len);
 };
 
 

@@ -45,7 +45,7 @@ AbstractToken *Lexer::scanNextToken() {
             }
             else {
                 ioModule->logError(6); // ошибка - запрещенный символ
-                token = scanName();		// ОСТОРОЖНО!! - выдаст запрещенный символ как токен
+                token = scanNextToken();
             }
 
             break;

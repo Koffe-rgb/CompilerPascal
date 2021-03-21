@@ -36,11 +36,10 @@ private:
 
 public:
 
-    Lexer(IoModule* ioModule) {
-        this->ioModule = ioModule;
+    Lexer(string& path) {
+        this->ioModule = new IoModule(path);
         curChar = '\0';
     }
-    // TODO: delete IOModule?
     ~Lexer() {
         delete ioModule;
     }
