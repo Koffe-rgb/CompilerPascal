@@ -24,6 +24,18 @@ begin
     i := 10;
   end;
 
+  { пустой оператор }
+  if k > j then
+    ;
+
+  ;
+  ;
+  ;
+
+  begin
+
+  end;
+
   k := pi_value;
   d := (5 mod j) * 10 + k;
 

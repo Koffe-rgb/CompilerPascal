@@ -266,6 +266,9 @@ void Syntaxer::oper(const set<TokenCodes> &followers) {
                 caseOperator(followers); break;
             case whilesy:
                 whileOperator(followers); break;
+            case semicolon:
+            case endsy:
+            case elsesy: break;
         }
     }
 }
