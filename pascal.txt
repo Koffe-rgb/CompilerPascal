@@ -2,7 +2,7 @@ program test;
 const (* раздел констант *)
   year = 2021;
   pi_value = 3.141592;
-type  (* раздел типов *)
+typeCode  (* раздел типов *)
   pInteger = ^integer;
 var  (* раздел переменных *)
   i, j, k : integer;

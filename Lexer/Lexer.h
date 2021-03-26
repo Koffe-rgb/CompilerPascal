@@ -3,8 +3,8 @@
 
 #pragma once
 #include "../IoModule/IoModule.h"
-#include "../Headers/Token.h"
-#include "../Headers/Codes.h"
+#include "Token.h"
+#include "Codes.h"
 #include <string>
 #include <algorithm>
 #include <cctype>

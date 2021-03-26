@@ -5,9 +5,19 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(
         CompilerPascal main.cpp
-        Headers/Token.h Headers/Constants.h
-        Headers/Codes.h
+
         IoModule/IoModule.cpp IoModule/IoModule.h
+
+        Lexer/Token.h
+        Lexer/Constants.h
+        Lexer/Codes.h
         Lexer/Lexer.cpp Lexer/Lexer.h
+
+        Syntaxer/Sets.h
         Syntaxer/Syntaxer.cpp Syntaxer/Syntaxer.h
-        Headers/Sets.h)
+
+        Semancer/Type.h
+        Semancer/Identifier.h
+        Semancer/Scope.cpp Semancer/Scope.h
+        Semancer/Semancer.cpp Semancer/Semancer.h
+)

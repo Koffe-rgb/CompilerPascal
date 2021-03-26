@@ -23,7 +23,7 @@ public:
     AbstractConstant(ConstTypes type) { this -> type = type; }
     ConstTypes getType() { return this -> type; }
     virtual ~AbstractConstant() = default;;
-    virtual string toString() = 0;
+    virtual string toString() {};
 };
 
 
