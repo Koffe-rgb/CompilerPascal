@@ -21,7 +21,7 @@ private:
     void readLine();		// прочитать следующую строку в curLine
 
 public:
-    IoModule(const string& filePath) {
+    explicit IoModule(const string& filePath) {
         lineIdx = 0;
         charIdx = 0;
         curLine = "";

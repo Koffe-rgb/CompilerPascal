@@ -16,36 +16,37 @@ private:
     Semancer* semancer;
     AbstractToken* curToken;
 
-    bool isNeedConvert;
-    bool wasFirst;
-
-    int lastIntegerValue;
-    double lastRealValue;
-    char lastCharValue;
-    string lastStringValue;
-
     AbstractType* lastCaseType;
 
 public:
-    Syntaxer(string& path) {
+    explicit Syntaxer(string& path) {
         lexer = new Lexer(path);
         ioModule = lexer->getIoModule();
         semancer = new Semancer(ioModule);
+        lastCaseType = nullptr;
 
         curToken = nullptr;
-        wasFirst = false;
-        isNeedConvert = false;
     };
     ~Syntaxer() {
         delete lexer;
         delete semancer;
     };
 
-    IoModule *getIoModule() const;
-
     void start() {
         program();
     };
+
+    bool hasErrors() {
+        return !ioModule->getErrCodesAndPos().empty();
+    }
+
+    void printErrors() {
+        for (auto err : ioModule->getErrCodesAndPos()) {
+            auto pos = err.second;
+            const auto& a = ErrorTable.at(err.first);
+            printf("Строка %d, позиция %d, (код %d): %s\n", pos.second, pos.first, err.first, a.c_str());
+        }
+    }
 private:
     void listError(int code) const;
 
@@ -54,9 +55,8 @@ private:
     void accept(TokenCodes tokenCode);
     bool isSymbolBelongTo(const set<TokenCodes>& symbols) const;
     static set<TokenCodes> unionOf(const set<TokenCodes>& first, const set<TokenCodes>& second);
-    void skipTo(const set<TokenCodes>& symbols);
-    void skipTo(const set<TokenCodes>& symbols, const set<TokenCodes>& followers);
 
+    void skipTo(const set<TokenCodes>& symbols, const set<TokenCodes>& followers);
 
     // Грамматики
     void program();

@@ -36,7 +36,7 @@ private:
 
 public:
 
-    Lexer(string& path) {
+    explicit Lexer(string& path) {
         this->ioModule = new IoModule(path);
         curChar = '\0';
     }

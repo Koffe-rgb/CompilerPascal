@@ -8,8 +8,8 @@ add_executable(
 
         IoModule/IoModule.cpp IoModule/IoModule.h
 
-        Lexer/Token.h
         Lexer/Constants.h
+        Lexer/Token.h
         Lexer/Codes.h
         Lexer/Lexer.cpp Lexer/Lexer.h
 

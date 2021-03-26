@@ -29,12 +29,6 @@ set<TokenCodes> Syntaxer::unionOf(const set<TokenCodes>& first, const set<TokenC
     return res;
 }
 
-void Syntaxer::skipTo(const set<TokenCodes>& symbols) {
-    while(!symbols.contains(curToken->getCode())) {
-        scanNextToken();
-    }
-}
-
 void Syntaxer::skipTo(const set<TokenCodes> &symbols, const set<TokenCodes> &followers) {
     while(!symbols.contains(curToken->getCode()) && !followers.contains(curToken->getCode())) {
         scanNextToken();
@@ -42,8 +36,8 @@ void Syntaxer::skipTo(const set<TokenCodes> &symbols, const set<TokenCodes> &fol
 }
 
 void Syntaxer::program() {
-    semancer->openScope();
     semancer->initGlobalScope();
+    semancer->openScope();
 
     scanNextToken();
     accept(programsy);
@@ -90,8 +84,7 @@ void Syntaxer::constDeclaration(const set<TokenCodes> &followers) {
         skipTo(start_constDeclaration, followers);
     }
     if (isSymbolBelongTo(start_constDeclaration)) {
-        string identName = ((IdentifierToken*)curToken)->getIdentName();
-
+        string identName = curToken->toString();
         auto identifier = new Identifier(identName, CONST_CLASS, nullptr, true);
 
         accept(ident);
@@ -120,31 +113,27 @@ AbstractType* Syntaxer::constant(const set<TokenCodes> &followers) {
         switch (curToken->getCode()) {
             case intconst:
                 type = semancer->integerType;
-                lastIntegerValue = ((IntConstant*)((ConstantToken*)curToken)->getConstant())->getValue();
 
                 accept(intconst);
                 break;
             case floatconst:
                 type = semancer->realType;
-                lastRealValue = ((FloatConstant*)((ConstantToken*)curToken)->getConstant())->getValue();
 
                 accept(floatconst);
                 break;
             case stringconst:
-                type = semancer->charType;
-                lastStringValue = ((StringConstant*)((ConstantToken*)curToken)->getConstant())->getValue();
+                type = semancer->stringType;
 
                 accept(stringconst);
                 break;
             case charconst:
                 type = semancer->charType;
-                lastCharValue = ((CharConstant*)((ConstantToken*)curToken)->getConstant())->getValue();
 
                 accept(charconst);
                 break;
             case ident:
                 scope = semancer->getLocalScope();
-                name = ((IdentifierToken*)curToken)->getIdentName();
+                name = curToken->toString();
                 identifier = semancer->searchIdentifier(scope, name);
 
                 if (identifier == nullptr)
@@ -170,7 +159,7 @@ AbstractType* Syntaxer::constant(const set<TokenCodes> &followers) {
                             break;
                         case ident:
                             scope = semancer->getLocalScope();
-                            name = ((IdentifierToken*)curToken)->getIdentName();
+                            name = curToken->toString();
                             identifier = semancer->searchIdentifier(scope, name);
 
                             if (identifier == nullptr)
@@ -210,7 +199,7 @@ void Syntaxer::typeDeclaration(const set<TokenCodes> &followers) {
         skipTo(start_typeDeclaration, followers);
     }
     if (isSymbolBelongTo(start_typeDeclaration)) {
-        string identName = ((IdentifierToken*)curToken)->getIdentName();
+        string identName = curToken->toString();
         auto identifier = new Identifier(identName, TYPE_CLASS, nullptr);
 
         accept(ident);
@@ -247,7 +236,7 @@ AbstractType* Syntaxer::simpleType(const set<TokenCodes> &followers) {
     }
     if (isSymbolBelongTo(start_simpleType)) {
         if (curToken->getCode() == ident) {
-            string name = ((IdentifierToken*)curToken)->getIdentName();
+            string name = curToken->toString();
             type = semancer->searchType(semancer->getLocalScope(), name);
             if (type == nullptr) {
                 auto identifier = semancer->searchIdentifier(semancer->getLocalScope(), name);
@@ -295,7 +284,7 @@ void Syntaxer::varPart(const set<TokenCodes> &followers) {
 }
 
 void insertVarTo(vector<Identifier*>& variables, AbstractToken* token) {
-    string name = ((IdentifierToken*)token)->getIdentName();
+    string name = token->toString();
     auto identifier = new Identifier(name, VAR_CLASS, nullptr);
     variables.push_back(identifier);
 }
@@ -377,8 +366,7 @@ void Syntaxer::assignmentOperator(const set<TokenCodes> &followers) {
         skipTo(start_assignmentOperator, followers);
     }
     if (isSymbolBelongTo(start_assignmentOperator)) {
-        string varName = ((IdentifierToken*)curToken)->getIdentName();
-
+        string varName = curToken->toString();
         auto symbols = unionOf(follow_assignmentOperator, followers);
         auto varType = variable(symbols);
 
@@ -397,7 +385,7 @@ AbstractType* Syntaxer::variable(const set<TokenCodes> &followers) {
         skipTo(start_variable, followers);
     }
     if (isSymbolBelongTo(start_variable)) {
-        string name = ((IdentifierToken*)curToken)->getIdentName();
+        string name = curToken->toString();
         auto identifier = semancer->getLocalScope()->retrieveIdentifier(name);
         if (identifier == nullptr)
             listError(104);
@@ -445,8 +433,6 @@ AbstractType* Syntaxer::simpleExpression(const set<TokenCodes> &followers) {
         skipTo(start_simpleExpression, followers);
     }
     if (isSymbolBelongTo(start_simpleExpression)) {
-        isNeedConvert = false;
-        wasFirst = false;
         bool firstTermHasSign = false;
 
         if (curToken->getCode() == TokenCodes::plus || curToken->getCode() == TokenCodes::minus) {
@@ -479,7 +465,6 @@ AbstractType* Syntaxer::term(const set<TokenCodes> &followers) {
     if (isSymbolBelongTo(start_term)) {
         auto symbols = unionOf(start_multiplicative, followers);
         type = factor(symbols);
-        wasFirst = true;
 
         while (isSymbolBelongTo(start_multiplicative)) {
             auto operationCode = curToken->getCode();
@@ -525,7 +510,7 @@ AbstractType* Syntaxer::factor(const set<TokenCodes> &followers) {
                 accept(charconst);
                 break;
             case stringconst:
-                t = semancer->charType;
+                t = semancer->stringType;
                 accept(stringconst);
                 break;
             case nilsy:
@@ -660,6 +645,3 @@ void Syntaxer::listOfMarks(const set<TokenCodes> &followers) {
     }
 }
 
-IoModule *Syntaxer::getIoModule() const {
-    return ioModule;
-}

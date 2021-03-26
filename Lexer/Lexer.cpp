@@ -345,6 +345,7 @@ AbstractToken *Lexer::scanName() {
     }
 
     toLowerCase(name);
+
     if (KeywordsMap.count(name) == 1) {
         TokenCodes code = KeywordsMap.at(name);
         return new KeywordToken(code);

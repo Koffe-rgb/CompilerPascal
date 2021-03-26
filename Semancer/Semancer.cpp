@@ -6,7 +6,7 @@ Scope *Semancer::openScope() {
     return scope;
 }
 
-Scope *Semancer::initGlobalScope() {
+void Semancer::initGlobalScope() {
     this->booleanType = localScope->addType(ENUM_TYPE);
     string booleanName = "boolean";
     auto booleanIdent = new Identifier(booleanName, TYPE_CLASS, booleanType);
@@ -38,6 +38,11 @@ Scope *Semancer::initGlobalScope() {
     auto charIdent = new Identifier(charName, TYPE_CLASS, charType);
     localScope->addIdentifier(charIdent);
 
+    this->stringType = localScope->addType(SCALAR_TYPE);
+    string stringName = "string";
+    auto stringIdent = new Identifier(stringName, TYPE_CLASS, stringType);
+    localScope->addIdentifier(stringIdent);
+
     this->nilType = localScope->addType(SCALAR_TYPE);
     string nilName = "nil";
     auto nilIdent = new Identifier(nilName, TYPE_CLASS, nilType);
@@ -45,23 +50,18 @@ Scope *Semancer::initGlobalScope() {
 }
 
 
-void Semancer::closeScope() {
-    auto idents = localScope->getIdentifiers();
-    for (const auto& ident :idents) {
-        delete ident.second;
-    }
-    idents.clear();
+void Semancer::closeScopes(Scope* scope) {
+//    if (scope->getOuterScope() != nullptr)
+//        closeScopes(scope->getOuterScope());
 
-    for (auto type : localScope->getTypes()) {
-        delete type;
-    }
-
-    localScope = localScope->getOuterScope();
+    delete scope;
 }
 
 Identifier *Semancer::searchIdentifier(Scope *scope, string &identName) {
     auto ident = scope->retrieveIdentifier(identName);
-    if (ident == nullptr && scope->getOuterScope() != nullptr)
+    if (ident != nullptr)
+        return ident;
+    if (scope->getOuterScope() != nullptr)
         return searchIdentifier(scope->getOuterScope(), identName);
     return nullptr;
 }

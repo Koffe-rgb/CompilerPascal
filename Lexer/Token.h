@@ -42,7 +42,7 @@ private:
     string identName;
 
 public:
-    IdentifierToken(string identName) : AbstractToken(TokenTypes::IDENTIFIER, TokenCodes::ident)
+    explicit IdentifierToken(string identName) : AbstractToken(TokenTypes::IDENTIFIER, TokenCodes::ident)
     {
         this -> identName = std::move(identName);
     }
@@ -84,7 +84,7 @@ public:
 class KeywordToken : public AbstractToken {
 
 public:
-    KeywordToken(TokenCodes tokenCode) : AbstractToken(TokenTypes::KEYWORD, tokenCode)
+    explicit KeywordToken(TokenCodes tokenCode) : AbstractToken(TokenTypes::KEYWORD, tokenCode)
     {
     }
 

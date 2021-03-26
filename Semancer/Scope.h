@@ -20,9 +20,11 @@ private:
     Scope* outerScope;
 
 public:
-    Scope(Scope* outerScope = nullptr) {
+    explicit Scope(Scope* outerScope = nullptr) {
         this->outerScope = outerScope;
     };
+    ~Scope();
+
     AbstractType* addType(Types type);
     bool addIdentifier(Identifier* identifier);
     Identifier* retrieveIdentifier(string& identName);

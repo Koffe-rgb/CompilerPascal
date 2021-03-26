@@ -20,10 +20,10 @@ protected:
     ConstTypes type;
 
 public:
-    AbstractConstant(ConstTypes type) { this -> type = type; }
+    explicit AbstractConstant(ConstTypes type) { this -> type = type; }
     ConstTypes getType() { return this -> type; }
     virtual ~AbstractConstant() = default;;
-    virtual string toString() {};
+    virtual string toString() = 0;
 };
 
 
@@ -33,7 +33,7 @@ private:
     int value;
 
 public:
-    IntConstant(int value) : AbstractConstant(ConstTypes::INT) {
+    explicit IntConstant(int value) : AbstractConstant(ConstTypes::INT) {
         this -> value = value;
     }
     int getValue() const { return this -> value; }
@@ -50,7 +50,7 @@ private:
     float value;
 
 public:
-    FloatConstant(float value) : AbstractConstant(ConstTypes::FLOAT) {
+    explicit FloatConstant(float value) : AbstractConstant(ConstTypes::FLOAT) {
         this -> value = value;
     }
     float getValue() const { return this -> value; }
@@ -67,7 +67,7 @@ private:
     char value;
 
 public:
-    CharConstant(char value) : AbstractConstant(ConstTypes::CHAR) {
+    explicit CharConstant(char value) : AbstractConstant(ConstTypes::CHAR) {
         this -> value = value;
     }
     char getValue() const { return this -> value; }
@@ -84,7 +84,7 @@ private:
     string value;
 
 public:
-    StringConstant(string value) : AbstractConstant(ConstTypes::STRING) {
+    explicit StringConstant(string value) : AbstractConstant(ConstTypes::STRING) {
         this -> value = std::move(value);
     }
     string getValue() { return this -> value; }

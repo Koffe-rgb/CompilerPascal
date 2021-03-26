@@ -1,7 +1,7 @@
 #include "Scope.h"
 
 AbstractType *Scope::addType(Types type) {
-    AbstractType* newType;
+    AbstractType* newType = nullptr;
     switch (type) {
         case UNKNOWN_TYPE: break;
         case SCALAR_TYPE:
@@ -18,12 +18,14 @@ AbstractType *Scope::addType(Types type) {
 }
 
 bool Scope::addIdentifier(Identifier* identifier) {
-    bool is_ident_unique = identifiers.contains(identifier->getIdentName());
+    string name = identifier->getIdentName();
+    bool contains = identifiers.contains(identifier->getIdentName());
 
-    if (is_ident_unique) {
+    if (!contains) {
         identifiers[identifier->getIdentName()] = identifier;
+        return true;
     }
-    return is_ident_unique;
+    return false;
 }
 
 Identifier *Scope::retrieveIdentifier(string& identName) {
@@ -43,6 +45,21 @@ const vector<AbstractType *> &Scope::getTypes() const {
 
 Scope *Scope::getOuterScope() const {
     return outerScope;
+}
+
+Scope::~Scope() {
+    for (const auto& ident : identifiers) {
+        delete ident.second;
+    }
+    identifiers.clear();
+
+    for (auto & type : types) {
+        delete type;
+        type = nullptr;
+    }
+    types.clear();
+
+    delete outerScope;
 }
 
 

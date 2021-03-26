@@ -1,67 +1,15 @@
 program test;
-const (* раздел констант *)
-  year = 2021;
-  pi_value = 3.141592;
-typeCode  (* раздел типов *)
-  pInteger = ^integer;
-var  (* раздел переменных *)
-  i, j, k : integer;
-  d : real;
-  s : string;
-  ch : char;
-  pInt : pInteger;
-  flag : boolean;
-(* раздел операторов *)
+var
+  i, j, k : Integer;
+  d : Real;
 begin
-  j := 1;
-  k := 2;
-
-  (* полное условное выражение с составными операторами *)
-  if (k > j) then begin
-    i := 9;
-  end
-  else begin
-    i := 10;
-  end;
-
-  { пустой оператор }
-  if k > j then
-    ;
-
-  ;
-  ;
-  ;
 
   begin
-
+    ;
+    j := 1;
   end;
 
-  k := pi_value;
-  d := (5 mod j) * 10 + k;
+  j := 1;
+  k := j;
 
-  ch := 'w';
-
-  (* неполное условное выражение с составным оператором *)
-  flag := true;
-  if (i = 9) or (i = 10) then begin
-    { цикл с предусловием }
-    while (flag) do begin
-      i := i + 2;
-      { условное выражение с простым оператором }
-      if i >= 13 then
-        flag := false;
-    end;
-  end;
-
-  { работа с указанной переменной }
-  pInt^ := 5;
-
-  { оператор варианта }
-  case i of
-    10 : s := 'ten';
-    11 : s := 'eleven';
-    12 : s := 'twelve';
-    13 : s := 'thirteen';
-    14 : s := 'fourteen'
-  end;
 end.

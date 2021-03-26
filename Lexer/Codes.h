@@ -206,7 +206,7 @@ const map<string, TokenCodes> KeywordsMap = {
         {"goto", gotosy},
         {"only", onlysy},
         {"then", thensy},
-        {"typeCode", typesy},
+        {"type", typesy},
         {"unit", unitsy},
         {"uses", usessy},
         {"with", withsy},

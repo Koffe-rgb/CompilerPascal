@@ -12,21 +12,25 @@ private:
     IoModule* ioModule;
 
 public:
-    AbstractType* booleanType;
-    AbstractType* integerType;
-    AbstractType* realType;
-    AbstractType* charType;
-    AbstractType* nilType;
+    AbstractType* booleanType = nullptr;
+    AbstractType* integerType = nullptr;
+    AbstractType* realType = nullptr;
+    AbstractType* charType = nullptr;
+    AbstractType* stringType = nullptr;
+    AbstractType* nilType = nullptr;
 
-    Semancer(IoModule* ioModule) {
+    explicit Semancer(IoModule* ioModule) {
         this->ioModule = ioModule;
+        localScope = new Scope();
     };
 
-    ~Semancer() = default;
+    ~Semancer() {
+        closeScopes(localScope);
+    };
 
     Scope* openScope();
-    void closeScope();
-    Scope* initGlobalScope();
+    void closeScopes(Scope* scope);
+    void initGlobalScope();
     Identifier* searchIdentifier(Scope* scope, string& identName);
     AbstractType* searchType(Scope* scope, string& name);
     bool checkAssignmentTypes(AbstractType* varType, AbstractType* exprType) const;

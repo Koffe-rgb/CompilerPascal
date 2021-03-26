@@ -26,6 +26,7 @@ public:
     Types getTypeCode() const {
         return typeCode;
     }
+    virtual ~AbstractType() = default;
 };
 
 class ScalarType : public AbstractType {
@@ -42,7 +43,7 @@ public:
     EnumType() {
         this->typeCode = ENUM_TYPE;
     }
-    ~EnumType() {
+    ~EnumType() override {
         symbols.clear();
     }
     void addSymbol(const string& symbol) {

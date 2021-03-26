@@ -39,9 +39,7 @@ public:
         this->is_const = is_const;
     };
 
-    virtual ~Identifier() {
-        type = nullptr;
-    }
+    virtual ~Identifier() = default;
 
 
     const string &getIdentName() const {
