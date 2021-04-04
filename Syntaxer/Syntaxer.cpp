@@ -60,6 +60,11 @@ void Syntaxer::block(const set<TokenCodes> &followers) {
         symbols = unionOf(follow_varPart, followers);
         varPart(symbols);
         operatorPart(followers);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -75,6 +80,11 @@ void Syntaxer::constPart(const set<TokenCodes> &followers) {
             constDeclaration(symbols);
             accept(semicolon);
         } while (curToken->getCode() == ident);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -96,6 +106,11 @@ void Syntaxer::constDeclaration(const set<TokenCodes> &followers) {
             listError(101);
         else
             semancer->getLocalScope()->addIdentifier(identifier);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -136,8 +151,11 @@ AbstractType* Syntaxer::constant(const set<TokenCodes> &followers) {
                 name = curToken->toString();
                 identifier = semancer->searchIdentifier(scope, name);
 
-                if (identifier == nullptr)
+                if (identifier == nullptr) {
                     listError(104);
+                    identifier = new Identifier(name, VAR_CLASS, semancer->abstractType);
+                    semancer->getLocalScope()->addIdentifier(identifier);
+                }
                 else {
                     type = identifier->getType();
                 }
@@ -162,8 +180,11 @@ AbstractType* Syntaxer::constant(const set<TokenCodes> &followers) {
                             name = curToken->toString();
                             identifier = semancer->searchIdentifier(scope, name);
 
-                            if (identifier == nullptr)
+                            if (identifier == nullptr) {
                                 listError(104);
+                                identifier = new Identifier(name, VAR_CLASS, semancer->abstractType);
+                                semancer->getLocalScope()->addIdentifier(identifier);
+                            }
                             else {
                                 type = identifier->getType();
                             }
@@ -172,6 +193,10 @@ AbstractType* Syntaxer::constant(const set<TokenCodes> &followers) {
                     scanNextToken();
                 }
                 break;
+        }
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
         }
     }
     return type;
@@ -190,6 +215,11 @@ void Syntaxer::typePart(const set<TokenCodes> &followers) {
             typeDeclaration(symbols);
             accept(semicolon);
         } while (curToken->getCode() == ident);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -208,6 +238,11 @@ void Syntaxer::typeDeclaration(const set<TokenCodes> &followers) {
 
         identifier->setType(t);
         semancer->getLocalScope()->addIdentifier(identifier);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -223,6 +258,11 @@ AbstractType* Syntaxer::type(const set<TokenCodes> &followers) {
         }
         else {
             t = simpleType(followers);
+        }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
         }
     }
     return t;
@@ -242,6 +282,8 @@ AbstractType* Syntaxer::simpleType(const set<TokenCodes> &followers) {
                 auto identifier = semancer->searchIdentifier(semancer->getLocalScope(), name);
                 if (identifier == nullptr) {
                     listError(104);
+                    identifier = new Identifier(name, VAR_CLASS, semancer->abstractType);
+                    semancer->getLocalScope()->addIdentifier(identifier);
 
                     // TODO ?????????
                     accept(ident);
@@ -249,6 +291,11 @@ AbstractType* Syntaxer::simpleType(const set<TokenCodes> &followers) {
             }
 
             accept(ident);
+        }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
         }
     }
     return type;
@@ -264,6 +311,11 @@ AbstractType* Syntaxer::referenceType(const set<TokenCodes> &followers) {
     if (isSymbolBelongTo(start_linkType)) {
         accept(arrow);
         accept(ident);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
     return type;
 }
@@ -280,6 +332,11 @@ void Syntaxer::varPart(const set<TokenCodes> &followers) {
             varDeclaration(symbols);
             accept(semicolon);
         } while (curToken->getCode() == ident);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -315,6 +372,11 @@ void Syntaxer::varDeclaration(const set<TokenCodes> &followers) {
             else
                 semancer->getLocalScope()->addIdentifier(identifier);
         }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -335,6 +397,11 @@ void Syntaxer::compoundOperator(const set<TokenCodes> &followers) {
             accept(semicolon);
         }
         accept(endsy);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -370,11 +437,21 @@ void Syntaxer::assignmentOperator(const set<TokenCodes> &followers) {
         auto symbols = unionOf(follow_assignmentOperator, followers);
         auto varType = variable(symbols);
 
+        if (isLastConst) {
+            listError(333);
+            isLastConst = false;
+        }
+
         accept(assign);
         auto exprType = expression(followers);
 
         if (!semancer->checkAssignmentTypes(varType, exprType))
             listError(328);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -387,15 +464,25 @@ AbstractType* Syntaxer::variable(const set<TokenCodes> &followers) {
     if (isSymbolBelongTo(start_variable)) {
         string name = curToken->toString();
         auto identifier = semancer->getLocalScope()->retrieveIdentifier(name);
-        if (identifier == nullptr)
+        if (identifier == nullptr) {
             listError(104);
-        else
+            identifier = new Identifier(name, VAR_CLASS, semancer->abstractType);
+            semancer->getLocalScope()->addIdentifier(identifier);
+        }
+        else {
             type = identifier->getType();
+            isLastConst = identifier->getIdentClass() == CONST_CLASS;
+        }
 
         accept(ident);
 
         if (curToken->getCode() == arrow) {
             accept(arrow);
+        }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
         }
     }
     return type;
@@ -421,6 +508,11 @@ AbstractType* Syntaxer::expression(const set<TokenCodes> &followers) {
             type = semancer->checkRelationOperation(type, sndType);
             if (type == nullptr)
                 listError(186);
+        }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
         }
     }
     return type;
@@ -452,6 +544,11 @@ AbstractType* Syntaxer::simpleExpression(const set<TokenCodes> &followers) {
             auto sndType = term(symbols);
             type = semancer->checkAdditive(type, sndType, operationCode, curToken->toString().size());
         }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
     return type;
 }
@@ -471,6 +568,11 @@ AbstractType* Syntaxer::term(const set<TokenCodes> &followers) {
             scanNextToken();
             auto sndType = factor(symbols);
             type = semancer->checkMultiplicative(type, sndType, operationCode, curToken->toString().size());
+        }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
         }
     }
     return type;
@@ -529,10 +631,10 @@ AbstractType* Syntaxer::factor(const set<TokenCodes> &followers) {
                             t = identifier->getType();
                             accept(ident);
                             break;
-                        case TYPE_CLASS:
-                            // TODO ????
-                            t = type(followers);
-                            break;
+//                        case TYPE_CLASS:
+//                            // TODO ????
+//                            t = type(followers);
+//                            break;
                     }
                 }
                 else {
@@ -545,6 +647,11 @@ AbstractType* Syntaxer::factor(const set<TokenCodes> &followers) {
                     accept(ident);
                 }
                 break;
+        }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
         }
     }
     return t;
@@ -569,6 +676,11 @@ void Syntaxer::ifOperator(const set<TokenCodes> &followers) {
             accept(elsesy);
             oper(symbols);
         }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -586,6 +698,11 @@ void Syntaxer::whileOperator(const set<TokenCodes> &followers) {
 
         accept(dosy);
         oper(followers);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -612,6 +729,11 @@ void Syntaxer::caseOperator(const set<TokenCodes> &followers) {
         }
 
         accept(endsy);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -625,6 +747,11 @@ void Syntaxer::elementOfVariants(const set<TokenCodes> &followers) {
         listOfMarks(symbols);
         accept(colon);
         oper(followers);
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
 
@@ -642,6 +769,10 @@ void Syntaxer::listOfMarks(const set<TokenCodes> &followers) {
             accept(comma);
             constant(followers);
         }
+
+        if (!isSymbolBelongTo(followers)) {
+            listError(6);
+            skipTo(followers, followers);
+        }
     }
 }
-

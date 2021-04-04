@@ -10,16 +10,16 @@ void test() {
     setlocale(LC_ALL, "Russian");
     string path = "../pascal.txt";
 
-    auto* sntxr = new Syntaxer(path);
+    auto* compiler = new Syntaxer(path);
 
-    sntxr->start();
-    if (sntxr->hasErrors()) {
-        sntxr->printErrors();
+    compiler->start();
+    if (compiler->hasErrors()) {
+        compiler->printErrors();
     } else {
         cout << "Ошибок не обнаружено\n";
     }
 
-    delete sntxr;
+    delete compiler;
 }
 
 int main() {

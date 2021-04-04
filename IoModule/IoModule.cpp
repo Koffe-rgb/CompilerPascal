@@ -7,6 +7,8 @@ void IoModule::readLine() {
         if (codeSource.eof()) {
             codeSource.close();
         }
+    } else {
+        endOfFileReached = true;
     }
 }
 
@@ -17,8 +19,8 @@ char IoModule::getChar() {
     } else {
         readLine();
 
-        charIdx = 0;
-        if (isOpen()) {
+        if (!endOfFileReached) {
+            charIdx = 0;
             chr = '\n';
         } else {
             chr = '\0';
@@ -26,14 +28,6 @@ char IoModule::getChar() {
     }
 
     return chr;
-}
-
-bool IoModule::isOpen() {
-    bool flag = true;
-    if (!codeSource.is_open()) {
-        flag = charIdx < curLine.size();
-    }
-    return flag;
 }
 
 char IoModule::peekChar(int offset) {
@@ -54,13 +48,6 @@ void IoModule::logError(int errCode, int len) {
     errCodesAndPos.push_back(ecp);
 }
 
-int IoModule::getLineIdx() const {
-    return lineIdx;
-}
-
-int IoModule::getCharIdx() const {
-    return charIdx;
-}
 
 const vector<pair<int, pair<int, int>>> &IoModule::getErrCodesAndPos() const {
     return errCodesAndPos;

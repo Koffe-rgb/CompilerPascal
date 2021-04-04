@@ -8,7 +8,7 @@
 
 class Semancer {
 private:
-    Scope* localScope;
+    Scope* lastScope;
     IoModule* ioModule;
 
 public:
@@ -18,14 +18,16 @@ public:
     AbstractType* charType = nullptr;
     AbstractType* stringType = nullptr;
     AbstractType* nilType = nullptr;
+    AbstractType* abstractType = new AbstractType();
 
     explicit Semancer(IoModule* ioModule) {
         this->ioModule = ioModule;
-        localScope = new Scope();
+        lastScope = new Scope();
     };
 
     ~Semancer() {
-        closeScopes(localScope);
+        closeScopes(lastScope);
+        delete abstractType;
     };
 
     Scope* openScope();

@@ -17,6 +17,8 @@ private:
     string curLine;			// текущая строка
     vector<pair<int, pair<int, int>>> errCodesAndPos; // список возникших ошибок
 
+    bool endOfFileReached = false;
+
 private:
     void readLine();		// прочитать следующую строку в curLine
 
@@ -30,13 +32,7 @@ public:
 
     virtual ~IoModule() = default;
 
-    int getLineIdx() const;
-
-    int getCharIdx() const;
-
     const vector<pair<int, pair<int, int>>> &getErrCodesAndPos() const;
-
-    bool isOpen();	// проверяет открыт ли файл и прочитана ли последгяя строка до конца
 
     char peekChar(int offset = 0);	// посмотреть на n-ную литеру, от текущей, без изменения charIdx
 

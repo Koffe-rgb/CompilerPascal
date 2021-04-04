@@ -28,7 +28,7 @@ const auto start_elementOfVariants  = set<TokenCodes> { TokenCodes::plus, TokenC
 const auto start_listOfMarks        = set<TokenCodes> { TokenCodes::plus, TokenCodes::minus, ident, intconst, floatconst, charconst, stringconst, nilsy };
 const auto start_linkType           = set<TokenCodes> { arrow };
 
-const auto follow_block             = set<TokenCodes> { point };
+const auto follow_block             = set<TokenCodes> { point, endoffile };
 const auto follow_constPart         = set<TokenCodes> { typesy, varsy, beginsy };
 const auto follow_typePart          = set<TokenCodes> { varsy, beginsy };
 const auto follow_varPart           = set<TokenCodes> { beginsy };

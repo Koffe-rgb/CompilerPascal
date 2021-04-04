@@ -1,15 +1,21 @@
 program test;
+const
+  year = 2021;
+  pi_value = 3.141592;
 var
-  i, j, k : Integer;
-  d : Real;
+  i, j, k : integer;
+  d : real;
+  s : string;
+  ch : char;
+  flag : boolean;
 begin
-
-  begin
-    ;
-    j := 1;
-  end;
-
   j := 1;
-  k := j;
+  k := 2;
+
+  k := year;
+  flag := 42 > -42;
+  s := 'string_value';
+  j := j * 8;
+  flag := not flag;
 
 end.

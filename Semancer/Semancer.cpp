@@ -1,52 +1,52 @@
 #include "Semancer.h"
 
 Scope *Semancer::openScope() {
-    auto scope = new Scope(localScope);
-    localScope = scope;
+    auto scope = new Scope(lastScope);
+    lastScope = scope;
     return scope;
 }
 
 void Semancer::initGlobalScope() {
-    this->booleanType = localScope->addType(ENUM_TYPE);
+    this->booleanType = lastScope->addType(ENUM_TYPE);
     string booleanName = "boolean";
     auto booleanIdent = new Identifier(booleanName, TYPE_CLASS, booleanType);
-    localScope->addIdentifier(booleanIdent);
+    lastScope->addIdentifier(booleanIdent);
 
     string falseName = "false";
     auto falseIdent = new Identifier(falseName, CONST_CLASS, booleanType);
-    localScope->addIdentifier(falseIdent);
+    lastScope->addIdentifier(falseIdent);
     ((EnumType*)booleanType)->addSymbol(falseName);
 
     string trueName = "true";
     auto trueIdent = new Identifier(trueName, CONST_CLASS, booleanType);
-    localScope->addIdentifier(trueIdent);
+    lastScope->addIdentifier(trueIdent);
     ((EnumType*)booleanType)->addSymbol(trueName);
 
 
-    this->integerType = localScope->addType(SCALAR_TYPE);
+    this->integerType = lastScope->addType(SCALAR_TYPE);
     string integerName = "integer";
     auto integerIdent = new Identifier(integerName, TYPE_CLASS, integerType);
-    localScope->addIdentifier(integerIdent);
+    lastScope->addIdentifier(integerIdent);
 
-    this->realType = localScope->addType(SCALAR_TYPE);
+    this->realType = lastScope->addType(SCALAR_TYPE);
     string realName = "real";
     auto readIdent = new Identifier(realName, TYPE_CLASS, realType);
-    localScope->addIdentifier(readIdent);
+    lastScope->addIdentifier(readIdent);
 
-    this->charType = localScope->addType(SCALAR_TYPE);
+    this->charType = lastScope->addType(SCALAR_TYPE);
     string charName = "char";
     auto charIdent = new Identifier(charName, TYPE_CLASS, charType);
-    localScope->addIdentifier(charIdent);
+    lastScope->addIdentifier(charIdent);
 
-    this->stringType = localScope->addType(SCALAR_TYPE);
+    this->stringType = lastScope->addType(SCALAR_TYPE);
     string stringName = "string";
     auto stringIdent = new Identifier(stringName, TYPE_CLASS, stringType);
-    localScope->addIdentifier(stringIdent);
+    lastScope->addIdentifier(stringIdent);
 
-    this->nilType = localScope->addType(SCALAR_TYPE);
+    this->nilType = lastScope->addType(SCALAR_TYPE);
     string nilName = "nil";
     auto nilIdent = new Identifier(nilName, TYPE_CLASS, nilType);
-    localScope->addIdentifier(nilIdent);
+    lastScope->addIdentifier(nilIdent);
 }
 
 
@@ -83,7 +83,13 @@ AbstractType *Semancer::searchType(Scope *scope, string &name) {
 bool Semancer::checkAssignmentTypes(AbstractType *varType, AbstractType *exprType) const {
     if (varType == nullptr || exprType == nullptr)
         return false;
+    if (varType == abstractType) {
+        //ioModule->logError(328);
+        return true;
+    }
     if (varType == realType && (exprType == realType || exprType == integerType))
+        return true;
+    if (varType == stringType && (exprType == stringType || exprType == charType))
         return true;
     if (varType == exprType)
         return true;
@@ -159,7 +165,7 @@ AbstractType *Semancer::checkBoolean(AbstractType *type) const {
 }
 
 Scope *Semancer::getLocalScope() const {
-    return localScope;
+    return lastScope;
 }
 
 

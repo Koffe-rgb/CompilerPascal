@@ -178,7 +178,7 @@ AbstractToken *Lexer::scanFlpar() {
 
     AbstractToken* token;
 
-    while (curChar != '}' && curChar != '\0') {
+    while (!(curChar == '}' || curChar == '\0')) {
         curChar = ioModule->getChar();
     }
 

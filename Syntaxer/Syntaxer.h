@@ -18,6 +18,7 @@ private:
 
     AbstractType* lastCaseType;
 
+    bool isLastConst = false;
 public:
     explicit Syntaxer(string& path) {
         lexer = new Lexer(path);
@@ -44,8 +45,9 @@ public:
         for (auto err : ioModule->getErrCodesAndPos()) {
             auto pos = err.second;
             const auto& a = ErrorTable.at(err.first);
-            printf("Строка %d, позиция %d, (код %d): %s\n", pos.second, pos.first, err.first, a.c_str());
+            printf("Ошибка (%d, %d): %s\n", pos.second, pos.first, a.c_str());
         }
+        printf("В процессе анализа найдено ошибок: %d", ioModule->getErrCodesAndPos().size());
     }
 private:
     void listError(int code) const;
